@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>PP - Websockets</title>
+  </head>
+
+  <body>
+    <div class="center">
+      <h1>Amazing Chat Application</h1>
+      <h3 id="chat-header">Currently in chat: general</h3>
+      <h3 id="connection-header">Connected to Websocket: false</h3>
+
+      <br />
+      <!--
+      Textarea to show messages from users
+      -->
+      <textarea
+        class="messagearea"
+        id="chatmessages"
+        readonly
+        name="chatmessages"
+        rows="20"
+        cols="50"
+        placeholder="Welcome to the general chatroom, here messages from others will appear"
+      ></textarea>
+
+      <br />
+     
+    </div>
+
+    <script src="index.js"></script>
+
+    <script type="text/javascript">
+      /**
+       * Once the website loads, we want to apply listeners and connect to websocket
+       * */
+      window.onload = function () {
+        // Apply our listener functions to the submit event on both forms
+        // we do it this way to avoid redirects
+        // document.getElementById("chatroom-message").onsubmit = sendMessage;
+
+        connectWebsocket();
+      };
+    </script>
+
+    <style type="text/css">
+      body {
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        background: rgb(216, 207, 186);
+      }
+
+      .center {
+        margin: auto;
+        width: 50%;
+        border: 3px solid green;
+        padding: 10px;
+      }
+    </style>
+  </body>
+</html>
