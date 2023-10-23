@@ -1,13 +1,3 @@
-// /**
-//  * SendMessageEvent is used to send messages to other clients
-//  * */
-// class SendMessageEvent {
-//   constructor(message, from) {
-//     this.message = message;
-//     // this.from = from;
-//   }
-// }
-
 /**
  * NewMessageEvent is messages comming from clients
  * */
@@ -23,20 +13,8 @@ class MarketData {
   }
 }
 
-// /**
-//  * sendMessage will send a new message onto the Chat
-//  * */
-// function sendMessage() {
-//   var newmessage = document.getElementById("message");
-//   if (newmessage != null) {
-//     let outgoingEvent = new SendMessageEvent(newmessage.value, "percy");
-//     sendEvent("send_message", outgoingEvent);
-//   }
-//   return false;
-// }
-
-// selectedchat is by default General.
-var selectedchat = "general";
+// Diccionario donde voy a guardar el estado actual de cada activo
+const mData = {};
 
 /**
  * Event is used to wrap all messages Send and Recieved
@@ -65,7 +43,7 @@ function routeEvent(event) {
     case "market_data":
       // Format payload
       const messageEvent = Object.assign(new MarketData(), event.payload);
-      appendMarketData(messageEvent);
+      processMarketData(messageEvent);
       break;
     default:
       console.error("unsupported message type");
@@ -73,42 +51,41 @@ function routeEvent(event) {
   }
 }
 
-function appendMarketData(md) {
-    var ts = new Date(md.TS);
-  // format message
-  const formattedMsg = `${ts.toLocaleString()}: ${md.Sym} 
-Compra: ${Math.round(md.BP * 1000) / 1000}(${md.BQ}) - Venta: ${Math.round(md.SP * 1000) / 1000}(${md.SQ})`;
-  // Append Message 
-  textarea = document.getElementById("chatmessages");
+function processMarketData(md) {
+  // Actualizo el diccionario
+  mData[md.Sym] = md;
+  let textarea = document.getElementById("text-ultima-operacion");
+
+  // Actualizo la pantalla con los últimos valores, aunque esté invisible
+  const mostrar = Object.values(mData).map((sym) => {
+    // const sym = mData[i];
+    const ts = new Date(sym.TS);
+    return `${sym.Sym} Compra: ${Math.round(sym.BP * 1000) / 1000}(${sym.BQ}) - Venta: ${
+      Math.round(sym.SP * 1000) / 1000
+    }(${sym.SQ}) - Última actualización: ${ts.toLocaleTimeString()} `;
+  });
+
+  textarea.textContent = mostrar.join('\n');
+
+  // Agrego la novedad al log, aunque esté invisible
+  var ts = new Date(md.TS);
+  const formattedMsg = `${ts.toLocaleTimeString()}: ${md.Sym} Compra: ${Math.round(md.BP * 1000) / 1000}(${
+    md.BQ
+  }) - Venta: ${Math.round(md.SP * 1000) / 1000}(${md.SQ})`;
+  textarea = document.getElementById("text-historial");
   textarea.innerHTML = textarea.innerHTML + "\n" + formattedMsg;
   textarea.scrollTop = textarea.scrollHeight;
-
-}
-/**
- * appendChatMessage takes in new messages and adds them to the chat
- * */
-function appendChatMessage(messageEvent) {
-  var date = new Date(messageEvent.sent);
-  // format message
-  const formattedMsg = `${date.toLocaleString()}: ${messageEvent.message}`;
-  // Append Message
-  textarea = document.getElementById("chatmessages");
-  textarea.innerHTML = textarea.innerHTML + "\n" + formattedMsg;
-  textarea.scrollTop = textarea.scrollHeight;
 }
 
+function onVerUltima() {
+  document.getElementById("text-ultima-operacion").classList.remove("d-none");
+  document.getElementById("text-historial").classList.add("d-none");
+}
 
-// /**
-//  * sendEvent
-//  * eventname - the event name to send on
-//  * payload - the data payload
-//  * */
-// function sendEvent(eventName, payload) {
-//   // Create a event Object with a event named send_message
-//   const event = new Event(eventName, payload);
-//   // Format as JSON and send
-//   conn.send(JSON.stringify(event));
-// }
+function onVerHistorial() {
+  document.getElementById("text-ultima-operacion").classList.add("d-none");
+  document.getElementById("text-historial").classList.remove("d-none");
+}
 
 /**
  * ConnectWebsocket will connect to websocket and add listeners
@@ -116,25 +93,26 @@ function appendChatMessage(messageEvent) {
 function connectWebsocket() {
   // Check if the browser supports WebSocket
   if (window["WebSocket"]) {
-    console.log("supports websockets");
+    // console.log("supports websockets");
     // Connect to websocket using OTP as a GET parameter
     conn = new WebSocket("ws://" + document.location.host + "/ws");
 
     // Onopen
     conn.onopen = function (evt) {
-      document.getElementById("connection-header").innerHTML =
-        "Connected to Websocket: true";
+      document.getElementById("estado").classList.remove("bg-danger");
+      document.getElementById("estado").classList.add("bg-success");
+      document.getElementById("estado").textContent = "ONLINE";
     };
 
     conn.onclose = function (evt) {
-      // Set disconnected
-      document.getElementById("connection-header").innerHTML =
-        "Connected to Websocket: false";
+      document.getElementById("estado").classList.remove("bg-success");
+      document.getElementById("estado").classList.add("bg-danger");
+      document.getElementById("estado").textContent = "OFFLINE";
     };
 
     // Add a listener to the onmessage event
     conn.onmessage = function (evt) {
-      console.log(evt);
+      // console.log(evt);
       // parse websocket message as JSON
       const eventData = JSON.parse(evt.data);
       // Assign JSON data to new Event Object

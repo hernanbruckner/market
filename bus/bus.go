@@ -1,6 +1,8 @@
 package bus
 
 import (
+	"math"
+	"math/rand"
 	"time"
 
 	"bruck.com.ar/market/marketdata"
@@ -26,10 +28,13 @@ var assetStates = make(map[string]AssetState)
 
 func setTimer(ast *AssetState) {
 
-	// Reseteo el timer
-	nextUpd := time.Millisecond * time.Duration(ast.asset.TypicalUpdateInterval)
+	// Genero un intervalo de actualización para este activo. Usamos el intervalo típico +/- un 25%
+	interval := int(math.Round(float64(ast.asset.TypicalUpdateInterval) * (0.75 + rand.Float64()*0.5)))
+
+	nextUpd := time.Duration(interval) * time.Millisecond
 	ast.NextUpdate = time.Now().Add(nextUpd)
 
+	// Reseteo el timer
 	if ast.timer == nil {
 		timer := time.NewTimer(nextUpd)
 		ast.timer = timer
@@ -37,10 +42,12 @@ func setTimer(ast *AssetState) {
 		ast.timer.Reset(nextUpd)
 	}
 
+	// log.Println(interval, nextUpd, ast.NextUpdate)
+
 	go func(a *AssetState) {
 		<-a.timer.C
 		{
-			// fmt.Println(ast.asset.Description + " - Next: " + ast.NextUpdate.Local().String())
+			// log.Println(ast.asset.Description + " - Next: " + ast.NextUpdate.Local().String())
 
 			// Genero la MarketData para el activo
 			md := ast.asset.MockMarketData(time.Now())
@@ -62,7 +69,6 @@ func StartBus(broadcast BroadcastFunction) {
 		// Copio las variables de esta iteración
 		asset := v
 		i := i
-		// assetStm := assetStates[i]
 
 		// Genero un AssetState por cada activo
 		assetStates[i] = AssetState{asset: &asset}
@@ -72,30 +78,5 @@ func StartBus(broadcast BroadcastFunction) {
 			setTimer(&a)
 		}(assetStates[i])
 
-		// mu.Unlock()
 	}
-
-	// // Acá se van a generar las novedades
-	// busInterval := time.NewTicker(intervalo)
-	// done := make(chan bool)
-
-	// // Tengo que cambiar el ticker por el timer
-
-	// for {
-	// 	select {
-	// 	case <-done:
-	// 		return
-	// 	case t := <-busInterval.C:
-	// 		// Busca todos los activos que tienen pendiente el update y los dispara
-	// 		for _, ac := range assetStates {
-	// 			if ac.NextUpdate.Compare(time.Now()) <= 0 {
-	// 				md := marketdata.MockMarketData(t)
-	// 				broadcast(md)
-	// 				// Reseteo el timer
-	// 				ac.NextUpdate = time.Now().Add(time.Millisecond * time.Duration(ac.asset.TypicalUpdateInterval))
-	// 			}
-	// 		}
-	// 		fmt.Println("Tick at", t)
-	// 	}
-	// }
 }
