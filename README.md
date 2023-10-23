@@ -10,6 +10,7 @@ Una simulación de datos de mercado usada para armar un servidor de mensajería 
 - Se debe descargar el repo y simplemente ejecutarlo con GO
 
 ## Data técnica
+La implementación de los websockets se basó en este tutorial: https://programmingpercy.tech/blog/mastering-websockets-with-go/
 Se utilizó la lib gorilla websocket para las conexiones. (github.com/gorilla/websocket)
 Se desarrolló con GO versión 1.21.1 pero seguramente sea compatible con versiones anteriores
 Se utilizan goroutines para todas las acciones que sean posibles
