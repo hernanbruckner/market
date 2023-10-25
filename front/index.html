@@ -32,7 +32,6 @@
               name="tipo"
               id="ultima-operacion"
               checked
-              onchange="onVerUltima()"
             />
             <label class="form-check-label" for="ultima-operacion">
               Ver última operación
@@ -46,7 +45,6 @@
               type="radio"
               name="tipo"
               id="historial"
-              onchange="onVerHistorial()"
             />
             <label class="form-check-label" for="historial">
               Ver historial
@@ -76,7 +74,7 @@
       <br />
     </div>
 
-    <script src="index.js"></script>
+    <script type="module" src="js/index.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -84,10 +82,7 @@
     ></script>
 
     <script type="text/javascript">
-      // Inicializamos
-      window.onload = function () {
-        connectWebsocket();
-      };
+     
     </script>
 
     <style type="text/css">
