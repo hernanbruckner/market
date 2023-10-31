@@ -28,4 +28,15 @@ function uiInit() {
   document.getElementById("historial").onchange = onVerHistorial;
 }
 
-export { onConnectionOpen, onConnectionClose, uiInit };
+function updateAssets(content) {
+  const textarea = document.getElementById("text-ultima-operacion");
+  textarea.textContent = content;
+}
+
+function updateHistory(newContent) {
+  const textarea = document.getElementById("text-historial");
+  textarea.innerHTML = textarea.innerHTML + "\n" + newContent;
+  textarea.scrollTop = textarea.scrollHeight;
+}
+
+export { onConnectionOpen, onConnectionClose, uiInit, updateAssets, updateHistory };

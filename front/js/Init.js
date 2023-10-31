@@ -1,4 +1,4 @@
-import { SymbolProcessingConfig } from "./classes/SymbolProcessingConfig.js";
+import { SymbolProcessingConfig } from "./configComponent/SymbolProcessingConfig.js";
 
 function init() {
   const config = {
