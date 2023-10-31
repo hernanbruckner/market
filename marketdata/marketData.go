@@ -1,6 +1,7 @@
 package marketdata
 
 import (
+	"errors"
 	"math/rand"
 	"time"
 
@@ -33,7 +34,12 @@ func NewMarketData() MarketData {
 	return md
 }
 
-func (aCfg AssetConfig) MockMarketData(t time.Time) MarketData {
+func (aCfg AssetConfig) MockMarketData(t time.Time) (MarketData, error) {
+
+	if t.IsZero() {
+		return MarketData{}, errors.New("fecha incorrecta")
+	}
+
 	md := MarketData{
 		EventId:      uuid.NewString(),
 		Timestamp:    t,
@@ -44,5 +50,5 @@ func (aCfg AssetConfig) MockMarketData(t time.Time) MarketData {
 		SellingQt:    uint64(rand.Intn(999) + 1),
 	}
 
-	return md
+	return md, nil
 }

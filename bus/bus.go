@@ -1,6 +1,7 @@
 package bus
 
 import (
+	"log"
 	"math"
 	"math/rand"
 	"time"
@@ -50,7 +51,11 @@ func setTimer(ast *AssetState) {
 			// log.Println(ast.asset.Description + " - Next: " + ast.NextUpdate.Local().String())
 
 			// Genero la MarketData para el activo
-			md := ast.asset.MockMarketData(time.Now())
+			md, err := ast.asset.MockMarketData(time.Now())
+
+			if err != nil {
+				log.Fatal(err.Error())
+			}
 
 			// Hago el broadcast
 			broadcastFn(md)

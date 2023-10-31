@@ -1,15 +1,18 @@
 class SymbolProcessingConfig {
   // El símbolo
-  symbol = "";
+  Symbol = "";
   // El mínimo intervalo entre actualizaciones
-  minUpdateInterval = 0;
-  // Callbacks a ejecutar en cada actualización
-  callBacks = [];
+  MinUpdateInterval = 0;
+  // Preprocesos a ejecutar antes de cada actualización
+  Preprocess = [];
+  // Callbacks a ejecutar después de cada actualización
+  CallBacks = [];
 
-  constructor(symbol, minUpdateInterval, callBacks) {
-    this.symbol = symbol;
-    this.minUpdateInterval = minUpdateInterval;
-    this.callBacks = callBacks;
+  constructor(symbol, minUpdateInterval, preProcess, callBacks) {
+    this.Symbol = symbol;
+    this.MinUpdateInterval = minUpdateInterval;
+    this.Preprocess = preProcess;
+    this.CallBacks = callBacks;
   }
 }
 

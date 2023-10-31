@@ -1,3 +1,5 @@
+// Esto sirve para ver como funciona la concurrencia en go
+
 package concurrencia
 
 import (
