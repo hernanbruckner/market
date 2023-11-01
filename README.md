@@ -23,10 +23,10 @@ Para demostrar la funcionalidad de unit testing en GO, se escribió un test sobr
 - Es un sitio web muy básico, que usa estilos de bootstrap v5
 - Se levanta usando el mismo host del backend, sus fuentes están en la carpeta "front" y se hostea en localhost:8080
 - Todo el funcionamiento se basa en Javascript puro, desarrollado utilizando módulos ES6
-- Existe una clase llamada "configComponent" cuyo objetivo es abstraer las configuraciones de los activos que se modelan, y facilitar alguna posible extensión
+- Existe una clase llamada `configComponent` cuyo objetivo es abstraer las configuraciones de los activos que se modelan, y facilitar alguna posible extensión
 - Esta permite configurar frecuencias máximas de actualización, e implementar acciones a realizar pre y post update de cualquier activo
 
 ## Instalación
-- Se debe descargar el repo y simplemente ejecutarlo con "go run ."
+- Se debe descargar el repo y simplemente ejecutarlo con `"go run ."`
 - Navegar a http://localhost:8080
 - Para ejecutar los tests sobre marketdara.MockMarketData, ejecutar `"go test -v"` en la carpeta \marketdata.
